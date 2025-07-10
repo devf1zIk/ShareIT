@@ -8,7 +8,6 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exception.BookingStatusException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,13 +17,12 @@ import java.util.stream.Collectors;
 public class BookingServiceImpl implements BookingService {
 
     private final Map<Long, Booking> bookingStorage = new HashMap<>();
-    private final AtomicLong bookingIdGen = new AtomicLong(1);
-
+    private long nextBookingId = 1L;
     @Override
     public BookingDto createBooking(BookingDto bookingDto) {
         validateBooking(bookingDto);
 
-        Long id = bookingIdGen.getAndIncrement();
+        Long id = nextBookingId++;
         Booking booking = BookingMapper.fromDto(bookingDto);
         booking.setId(id);
         booking.setStatus(BookingStatus.WAITING);

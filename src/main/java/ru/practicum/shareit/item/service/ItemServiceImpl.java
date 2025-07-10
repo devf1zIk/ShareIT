@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final Map<Long, Item> itemStorage = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    private long nextItemId = 1L;
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
         validateItemDto(itemDto);
-        Long id = idGenerator.getAndIncrement();
+        Long id = nextItemId++;
         Item item = ItemMapper.fromDto(itemDto, userId);
         item.setId(id);
         itemStorage.put(id, item);
