@@ -10,7 +10,6 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,6 +17,7 @@ public class BookingServiceImpl implements BookingService {
 
     private final Map<Long, Booking> bookingStorage = new HashMap<>();
     private long nextBookingId = 1L;
+
     @Override
     public BookingDto createBooking(BookingDto bookingDto) {
         validateBooking(bookingDto);
