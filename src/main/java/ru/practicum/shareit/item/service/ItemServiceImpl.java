@@ -7,6 +7,8 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.service.UserService;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +17,18 @@ import java.util.stream.Collectors;
 @Service
 public class ItemServiceImpl implements ItemService {
 
+    private final UserService userService;
+
     private final Map<Long, Item> itemStorage = new HashMap<>();
     private long nextItemId = 1L;
 
+    public ItemServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
+
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
+        userService.getUserById(userId);
         validateItemDto(itemDto);
         Long id = nextItemId++;
         Item item = ItemMapper.fromDto(itemDto, userId);
@@ -30,6 +39,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(Long itemId, Long userId, ItemDto itemDto) {
+        userService.getUserById(userId);
         Item existing = itemStorage.get(itemId);
         if (existing == null) {
             throw new NotFoundException("Вещь с id " + itemId + " не найдена.");
