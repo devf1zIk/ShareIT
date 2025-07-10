@@ -20,7 +20,7 @@ public class ItemController {
         return ResponseEntity.ok(itemService.createItem(userId, itemDto));
     }
 
-    @PatchMapping("/{itemId}")
+    @PutMapping("/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @PathVariable Long itemId,
                                               @RequestBody ItemDto itemDto) {
