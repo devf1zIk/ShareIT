@@ -7,7 +7,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
-        User owner = userService.getUserById(userId);
+        UserDto owner = userService.getUserById(userId);
         userService.getUserById(userId);
         Long id = nextItemId++;
         Item item = ItemMapper.fromDto(itemDto, owner);
