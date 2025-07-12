@@ -86,8 +86,9 @@ public class ItemServiceImpl implements ItemService {
         String lowerText = text.toLowerCase();
         return itemStorage.values().stream()
                 .filter(item -> Boolean.TRUE.equals(item.getAvailable()) &&
-                        (item.getName().toLowerCase().contains(lowerText)
-                                || item.getDescription().toLowerCase().contains(lowerText)))
+                        (item.getName() != null && item.getName().toLowerCase().contains(lowerText) ||
+                                item.getDescription() != null && item.getDescription().toLowerCase().contains(lowerText))
+                )
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
