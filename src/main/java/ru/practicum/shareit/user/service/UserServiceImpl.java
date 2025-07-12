@@ -54,10 +54,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Long id) {
+    public User getUserById(Long id) {
         User user = users.get(id);
         if (user == null) throw new NotFoundException("Пользователь не найден: " + id);
-        return UserMapper.toDto(user);
+        return user;
     }
 
     @Override

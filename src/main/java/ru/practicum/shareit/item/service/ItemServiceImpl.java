@@ -7,6 +7,8 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +28,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
+        User owner = userService.getUserById(userId);
         userService.getUserById(userId);
         Long id = nextItemId++;
-        Item item = ItemMapper.fromDto(itemDto, userId);
+        Item item = ItemMapper.fromDto(itemDto, owner);
         item.setId(id);
         itemStorage.put(id, item);
         return ItemMapper.toDto(item);
@@ -41,7 +44,7 @@ public class ItemServiceImpl implements ItemService {
         if (existing == null) {
             throw new NotFoundException("Вещь с id " + itemId + " не найдена.");
         }
-        if (!existing.getOwnerId().equals(userId)) {
+        if (!existing.getOwner().getId().equals(userId)) {
             throw new ForbiddenException("Вы не владелец этой вещи.");
         }
 
@@ -72,7 +75,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getUserItems(Long userId) {
         return itemStorage.values().stream()
-                .filter(item -> item.getOwnerId().equals(userId))
+                .filter(item -> item.getOwner().getId().equals(userId))
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
