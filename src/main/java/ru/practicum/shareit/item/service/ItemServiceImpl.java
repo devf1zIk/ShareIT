@@ -1,19 +1,19 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.service.UserService;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ItemServiceImpl implements ItemService {
 
@@ -22,14 +22,11 @@ public class ItemServiceImpl implements ItemService {
     private final Map<Long, Item> itemStorage = new HashMap<>();
     private long nextItemId = 1L;
 
-    public ItemServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
+
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
         userService.getUserById(userId);
-        validateItemDto(itemDto);
         Long id = nextItemId++;
         Item item = ItemMapper.fromDto(itemDto, userId);
         item.setId(id);
@@ -91,20 +88,6 @@ public class ItemServiceImpl implements ItemService {
                                 || item.getDescription().toLowerCase().contains(lowerText)))
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
-    }
-
-    private void validateItemDto(ItemDto dto) {
-        if (dto.getName() == null || dto.getName().isBlank()) {
-            throw new ValidationException("Название вещи не может быть пустым.");
-        }
-
-        if (dto.getDescription() == null || dto.getDescription().isBlank()) {
-            throw new ValidationException("Описание вещи не может быть пустым.");
-        }
-
-        if (dto.getAvailable() == null) {
-            throw new ValidationException("Поле доступности (available) обязательно.");
-        }
     }
 }
 
