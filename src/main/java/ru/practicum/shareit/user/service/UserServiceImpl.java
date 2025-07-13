@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -22,10 +23,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         if (userDto.getName() == null || userDto.getName().isBlank()) {
-            throw new IllegalArgumentException("Имя не может быть пустым");
+            throw new ValidationException("Имя не может быть пустым");
         }
         if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            throw new IllegalArgumentException("Email не может быть пустым");
+            throw new ValidationException("Email не может быть пустым");
         }
         checkEmailUniqueness(userDto.getEmail(), null);
         User user = UserMapper.fromDto(userDto);
