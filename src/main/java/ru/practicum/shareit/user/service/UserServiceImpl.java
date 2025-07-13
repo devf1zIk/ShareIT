@@ -21,6 +21,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        if (userDto.getName() == null || userDto.getName().isBlank()) {
+            throw new IllegalArgumentException("Имя не может быть пустым");
+        }
+        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email не может быть пустым");
+        }
         checkEmailUniqueness(userDto.getEmail(), null);
         User user = UserMapper.fromDto(userDto);
         user.setId(idGen++);
