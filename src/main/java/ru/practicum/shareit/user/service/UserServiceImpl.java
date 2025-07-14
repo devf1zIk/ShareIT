@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -20,30 +22,24 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserDto createUser(UserDto userDto) {
+    public UserDto createUser(UserCreateDto userDto) {
         checkEmailUniqueness(userDto.getEmail(), null);
-
         User user = userMapper.toEntity(userDto);
-        User saved = userRepository.save(user);
-        return userMapper.toDto(saved);
+        user.setId(null);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) {
-        User existing = userRepository.findById(id)
+    public UserDto updateUser(Long id, UserUpdateDto dto) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден: " + id));
 
-        if (userDto.getEmail() != null && !userDto.getEmail().equalsIgnoreCase(existing.getEmail())) {
-            checkEmailUniqueness(userDto.getEmail(), id);
-            existing.setEmail(userDto.getEmail());
+        if (dto.getEmail() != null && !dto.getEmail().equalsIgnoreCase(user.getEmail())) {
+            checkEmailUniqueness(dto.getEmail(), id);
         }
 
-        if (userDto.getName() != null) {
-            existing.setName(userDto.getName());
-        }
-
-        User updated = userRepository.save(existing);
-        return userMapper.toDto(updated);
+        userMapper.updateUserFromDto(dto, user);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -56,21 +52,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден: " + id));
-        return userMapper.toDto(user);
+        return userMapper.toDto(userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден: " + id)));
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(userMapper::toDto)
-                .toList();
+        return userRepository.findAll().stream().map(userMapper::toDto).toList();
     }
 
     private void checkEmailUniqueness(String email, Long excludeId) {
-        Optional<User> userWithSameEmail = Optional.ofNullable(userRepository.findByEmail(email));
-        if (userWithSameEmail.isPresent() && !Objects.equals(userWithSameEmail.get().getId(), excludeId)) {
+        Optional<User> userOpt = Optional.ofNullable(userRepository.findByEmail(email));
+        if (userOpt.isPresent() && !Objects.equals(userOpt.get().getId(), excludeId)) {
             throw new ConflictException("Email уже используется: " + email);
         }
     }
