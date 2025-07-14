@@ -1,19 +1,27 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import ru.practicum.shareit.user.dto.UserDto;
+import jakarta.persistence.*;
+import lombok.*;
+import ru.practicum.shareit.map.BaseEntity;
+import ru.practicum.shareit.user.model.User;
 
+@EqualsAndHashCode(callSuper = true)
+@Entity
+@Table(name = "items")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Item {
-    private Long id;
+@AllArgsConstructor
+public class Item extends BaseEntity {
+
+    @Column(nullable = false)
     private String name;
+
     private String description;
+
+    @Column(nullable = false)
     private Boolean available;
-    private UserDto owner;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 }
