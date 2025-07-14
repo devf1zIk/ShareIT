@@ -21,6 +21,9 @@ public class Item extends BaseEntity {
     @Column(nullable = false)
     private Boolean available;
 
+    @Column(nullable = false)
+    private Long request;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;

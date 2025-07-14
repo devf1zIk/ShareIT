@@ -9,8 +9,14 @@ import ru.practicum.shareit.user.model.User;
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
 
+    @Mapping(source = "item.id", target = "itemId")
+    @Mapping(source = "booker.id", target = "bookerId")
     BookingDto toBookingDto(Booking booking);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", constant = "WAITING")
+    @Mapping(target = "booker", ignore = true)
+    @Mapping(target = "item", ignore = true)
     Booking toBooking(NewBookingDto newBookingDto, @Context User booker, @Context Item item);
 
     @AfterMapping
