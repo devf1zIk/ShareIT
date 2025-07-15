@@ -8,14 +8,12 @@ import ru.practicum.shareit.item.model.Item;
 public interface ItemMapper {
 
     @Mapping(source = "owner.id", target = "ownerId")
-    @Mapping(source = "request", target = "request")
     @Mapping(target = "lastBooking", ignore = true)
     @Mapping(target = "nextBooking", ignore = true)
     @Mapping(target = "comments", ignore = true)
     ItemDto toDto(Item item);
 
     @Mapping(target = "owner", ignore = true)
-    @Mapping(target = "request", ignore = true)
     Item toEntity(ItemDto itemDto);
 
     default void updateItemFromDto(ItemDto dto, @MappingTarget Item item) {
@@ -27,6 +25,9 @@ public interface ItemMapper {
         }
         if (dto.getAvailable() != null) {
             item.setAvailable(dto.getAvailable());
+        }
+        if (dto.getRequest() != null) {
+            item.setRequest(dto.getRequest());
         }
     }
 }
