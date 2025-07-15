@@ -2,20 +2,20 @@ package ru.practicum.shareit.comment.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.map.BaseEntity;
 import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "comments")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Comment extends BaseEntity {
 
     @Column(nullable = false)

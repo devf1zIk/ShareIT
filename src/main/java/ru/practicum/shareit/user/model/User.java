@@ -4,13 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import ru.practicum.shareit.map.BaseEntity;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "users")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Getter
+@Setter
 public class User extends BaseEntity {
 
     @Column(nullable = false)

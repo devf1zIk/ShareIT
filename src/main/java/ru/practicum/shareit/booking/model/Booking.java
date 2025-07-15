@@ -7,12 +7,12 @@ import ru.practicum.shareit.map.BaseEntity;
 import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "bookings")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Booking extends BaseEntity {
 
     @ManyToOne

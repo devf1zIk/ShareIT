@@ -35,8 +35,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
-        User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        User owner = getUserOrThrow(userId);
 
         Item item = itemMapper.toEntity(itemDto);
         item.setOwner(owner);
@@ -46,15 +45,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(Long itemId, Long userId, ItemDto itemDto) {
+        User user = getUserOrThrow(userId);
+
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
 
-        if (!item.getOwner().getId().equals(userId)) {
+        if (!item.getOwner().getId().equals(user.getId())) {
             throw new ForbiddenException("Вы не владелец этой вещи");
         }
 
         itemMapper.updateItemFromDto(itemDto, item);
-
         return itemMapper.toDto(itemRepository.save(item));
     }
 
@@ -70,12 +70,13 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
 
         itemDto.setComments(comments);
-
         return itemDto;
     }
 
     @Override
     public List<ItemDto> getUserItems(Long userId) {
+        getUserOrThrow(userId);
+
         return itemRepository.findByOwnerId(userId).stream()
                 .map(itemMapper::toDto)
                 .collect(Collectors.toList());
@@ -83,7 +84,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItems(String text) {
-        if (text == null || text.isBlank()) return List.of();
+        if (text == null || text.isBlank()) {
+            return List.of();
+        }
 
         return itemRepository.searchAvailableItems(text).stream()
                 .map(itemMapper::toDto)
@@ -92,8 +95,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public CommentDto addComment(Long userId, Long itemId, CommentCreateDto commentDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        User user = getUserOrThrow(userId);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
 
@@ -111,5 +113,10 @@ public class ItemServiceImpl implements ItemService {
 
         Comment saved = commentsRepository.save(comment);
         return commentMapper.toDto(saved);
+    }
+
+    private User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден: " + userId));
     }
 }

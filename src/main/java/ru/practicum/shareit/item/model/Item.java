@@ -5,12 +5,12 @@ import lombok.*;
 import ru.practicum.shareit.map.BaseEntity;
 import ru.practicum.shareit.user.model.User;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "items")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Item extends BaseEntity {
 
     @Column(nullable = false)

@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,18 +10,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@Transactional
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByBookerId(Long bookerId, Pageable pageable);
+    List<Booking> findByBookerId(Long bookerId, Sort sort);
+    List<Booking> findByBookerIdAndStartBeforeAndEndAfter(Long bookerId, LocalDateTime start, LocalDateTime end, Sort sort);
+    List<Booking> findByBookerIdAndEndBefore(Long bookerId, LocalDateTime end, Sort sort);
+    List<Booking> findByBookerIdAndStartAfter(Long bookerId, LocalDateTime start, Sort sort);
+    List<Booking> findByBookerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
 
-    List<Booking> findByBookerIdAndStartBeforeAndEndAfter(Long bookerId, LocalDateTime start, LocalDateTime end, Pageable pageable);
-
-    List<Booking> findByBookerIdAndEndBefore(Long bookerId, LocalDateTime end, Pageable pageable);
-
-    List<Booking> findByBookerIdAndStartAfter(Long bookerId, LocalDateTime start, Pageable pageable);
-
-    List<Booking> findByBookerIdAndStatus(Long bookerId, BookingStatus status, Pageable pageable);
+    List<Booking> findByItem_Owner_Id(Long ownerId, Sort sort);
+    List<Booking> findByItem_Owner_IdAndStartBeforeAndEndAfter(Long ownerId, LocalDateTime start, LocalDateTime end, Sort sort);
+    List<Booking> findByItem_Owner_IdAndEndBefore(Long ownerId, LocalDateTime end, Sort sort);
+    List<Booking> findByItem_Owner_IdAndStartAfter(Long ownerId, LocalDateTime start, Sort sort);
+    List<Booking> findByItem_Owner_IdAndStatus(Long ownerId, BookingStatus status, Sort sort);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id = :userId " +
