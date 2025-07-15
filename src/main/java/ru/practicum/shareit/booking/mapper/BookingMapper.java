@@ -14,6 +14,7 @@ public interface BookingMapper {
     @Mapping(source = "booker.id", target = "bookerId")
     BookingDto toBookingDto(Booking booking);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", constant = "WAITING")
     @Mapping(target = "booker", ignore = true)
     @Mapping(target = "item", ignore = true)

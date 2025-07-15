@@ -16,7 +16,7 @@ public interface UserMapper {
     @Mapping(source = "email", target = "email")
     UserDto toDto(User user);
 
-
+    @Mapping(target = "id", ignore = true)
     User toEntity(UserCreateDto userDto);
 
     default void updateUserFromDto(UserUpdateDto dto, @MappingTarget User user) {
