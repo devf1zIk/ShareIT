@@ -24,7 +24,7 @@ public class Item extends BaseEntity {
     @Column(nullable = false)
     private Long request;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 }
