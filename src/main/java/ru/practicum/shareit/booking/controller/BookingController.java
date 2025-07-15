@@ -15,15 +15,14 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                             @RequestBody NewBookingDto newBookingDto) {
+    public BookingDto create(@RequestBody NewBookingDto newBookingDto,@RequestHeader("X-Sharer-User-Id") Long userId) {
         return bookingService.createBooking(userId, newBookingDto);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approve(@RequestHeader("X-Sharer-User-Id") Long userId,
-                              @PathVariable Long bookingId,
-                              @RequestParam boolean approved) {
+    public BookingDto approve(@PathVariable Long bookingId,
+                              @RequestParam boolean approved,
+                              @RequestHeader("X-Sharer-User-Id") Long userId) {
         return bookingService.approveBooking(userId, bookingId, approved);
     }
 

@@ -123,28 +123,14 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime now = LocalDateTime.now();
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
 
-        List<Booking> bookings;
-        switch (state) {
-            case CURRENT:
-                bookings = bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(ownerId, now, now, sort);
-                break;
-            case PAST:
-                bookings = bookingRepository.findByItem_Owner_IdAndEndBefore(ownerId, now, sort);
-                break;
-            case FUTURE:
-                bookings = bookingRepository.findByItem_Owner_IdAndStartAfter(ownerId, now, sort);
-                break;
-            case WAITING:
-                bookings = bookingRepository.findByItem_Owner_IdAndStatus(ownerId, BookingStatus.WAITING, sort);
-                break;
-            case REJECTED:
-                bookings = bookingRepository.findByItem_Owner_IdAndStatus(ownerId, BookingStatus.REJECTED, sort);
-                break;
-            case ALL:
-            default:
-                bookings = bookingRepository.findByItem_Owner_Id(ownerId, sort);
-                break;
-        }
+        List<Booking> bookings = switch (state) {
+            case CURRENT -> bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(ownerId, now, now, sort);
+            case PAST -> bookingRepository.findByItem_Owner_IdAndEndBefore(ownerId, now, sort);
+            case FUTURE -> bookingRepository.findByItem_Owner_IdAndStartAfter(ownerId, now, sort);
+            case WAITING -> bookingRepository.findByItem_Owner_IdAndStatus(ownerId, BookingStatus.WAITING, sort);
+            case REJECTED -> bookingRepository.findByItem_Owner_IdAndStatus(ownerId, BookingStatus.REJECTED, sort);
+            default -> bookingRepository.findByItem_Owner_Id(ownerId, sort);
+        };
 
         return bookings.stream()
                 .map(bookingMapper::toBookingDto)
