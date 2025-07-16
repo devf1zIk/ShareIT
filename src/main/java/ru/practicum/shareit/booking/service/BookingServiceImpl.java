@@ -74,14 +74,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto approveBooking(Long userId, Long bookingId, boolean approved) {
-        validateUserExists(userId);
-
-        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
-        if (optionalBooking.isEmpty()) {
-            throw new ValidationException("Бронирование не найдено");
-        }
-
-        Booking booking = optionalBooking.get();
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
 
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new ForbiddenException("Только владелец может подтвердить бронирование");
@@ -91,14 +85,9 @@ public class BookingServiceImpl implements BookingService {
             throw new BookingStatusException("Бронирование уже подтверждено или отклонено");
         }
 
-        if (approved) {
-            booking.setStatus(BookingStatus.APPROVED);
-        } else {
-            booking.setStatus(BookingStatus.REJECTED);
-        }
-
-        Booking saved = bookingRepository.save(booking);
-        return bookingMapper.toBookingDto(saved);
+        booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
+        Booking updated = bookingRepository.save(booking);
+        return bookingMapper.toBookingDto(updated);
     }
 
     @Override
