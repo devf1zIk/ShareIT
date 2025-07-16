@@ -10,8 +10,8 @@ import ru.practicum.shareit.item.service.ItemService;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/items")
+@RequiredArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
@@ -19,35 +19,41 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<ItemDto> createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @RequestBody ItemDto itemDto) {
-        return ResponseEntity.ok(itemService.createItem(userId, itemDto));
+        ItemDto createdItem = itemService.createItem(userId, itemDto);
+        return ResponseEntity.ok(createdItem);
     }
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @PathVariable Long itemId,
                                               @RequestBody ItemDto itemDto) {
-        return ResponseEntity.ok(itemService.updateItem(itemId, userId, itemDto));
+        ItemDto updatedItem = itemService.updateItem(itemId, userId, itemDto);
+        return ResponseEntity.ok(updatedItem);
     }
 
     @GetMapping("/{itemId}")
     public ResponseEntity<ItemDto> getItem(@PathVariable Long itemId) {
-        return ResponseEntity.ok(itemService.getItem(itemId));
+        ItemDto item = itemService.getItem(itemId);
+        return ResponseEntity.ok(item);
     }
 
     @GetMapping
     public ResponseEntity<List<ItemDto>> getUserItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return ResponseEntity.ok(itemService.getUserItems(userId));
+        List<ItemDto> items = itemService.getUserItems(userId);
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<ItemDto>> searchItems(@RequestParam String text) {
-        return ResponseEntity.ok(itemService.searchItems(text));
+        List<ItemDto> items = itemService.searchItems(text);
+        return ResponseEntity.ok(items);
     }
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<CommentDto> addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                  @PathVariable Long itemId,
                                                  @RequestBody CommentCreateDto commentDto) {
-        return ResponseEntity.ok(itemService.addComment(userId, itemId, commentDto));
+        CommentDto createdComment = itemService.addComment(userId, itemId, commentDto);
+        return ResponseEntity.ok(createdComment);
     }
 }

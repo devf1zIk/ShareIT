@@ -18,23 +18,27 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody UserCreateDto userDto) {
-        return ResponseEntity.ok(userService.createUser(userDto));
+        UserDto createdUser = userService.createUser(userDto);
+        return ResponseEntity.ok(createdUser);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id,
                                               @RequestBody UserUpdateDto userDto) {
-        return ResponseEntity.ok(userService.updateUser(id, userDto));
+        UserDto updatedUser = userService.updateUser(id, userDto);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        UserDto user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        List<UserDto> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
     @DeleteMapping("/{id}")
@@ -43,4 +47,3 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 }
-

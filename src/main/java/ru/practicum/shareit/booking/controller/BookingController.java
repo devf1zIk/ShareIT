@@ -8,14 +8,15 @@ import ru.practicum.shareit.booking.service.BookingService;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/bookings")
+@RequiredArgsConstructor
 public class BookingController {
 
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDto create(@RequestBody NewBookingDto newBookingDto,@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public BookingDto create(@RequestBody NewBookingDto newBookingDto,
+                             @RequestHeader("X-Sharer-User-Id") Long userId) {
         return bookingService.createBooking(userId, newBookingDto);
     }
 

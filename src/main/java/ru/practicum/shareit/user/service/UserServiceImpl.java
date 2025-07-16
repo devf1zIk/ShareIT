@@ -10,8 +10,8 @@ import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -23,28 +23,49 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserCreateDto userDto) {
-        checkEmailUniqueness(userDto.getEmail(), null);
+        String email = userDto.getEmail();
+
+        if (email != null) {
+            Optional<User> existingUser = userRepository.findByEmail(email);
+            if (existingUser.isPresent()) {
+                throw new ConflictException("Email уже используется: " + email);
+            }
+        }
+
         User user = userMapper.toEntity(userDto);
-        user.setId(null);
-        return userMapper.toDto(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
     }
 
     @Override
     public UserDto updateUser(Long id, UserUpdateDto dto) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден: " + id));
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new NotFoundException("Пользователь не найден: " + id);
+        }
 
-        if (dto.getEmail() != null && !dto.getEmail().equalsIgnoreCase(user.getEmail())) {
-            checkEmailUniqueness(dto.getEmail(), id);
+        User user = optionalUser.get();
+
+        String newEmail = dto.getEmail();
+        if (newEmail != null && !newEmail.equalsIgnoreCase(user.getEmail())) {
+            Optional<User> userWithSameEmail = userRepository.findByEmail(newEmail);
+            if (userWithSameEmail.isPresent()) {
+                User foundUser = userWithSameEmail.get();
+                if (!foundUser.getId().equals(id)) {
+                    throw new ConflictException("Email уже используется: " + newEmail);
+                }
+            }
         }
 
         userMapper.updateUserFromDto(dto, user);
-        return userMapper.toDto(userRepository.save(user));
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
     }
 
     @Override
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
+        boolean exists = userRepository.existsById(id);
+        if (!exists) {
             throw new NotFoundException("Пользователь не найден: " + id);
         }
         userRepository.deleteById(id);
@@ -52,19 +73,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        return userMapper.toDto(userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден: " + id)));
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new NotFoundException("Пользователь не найден: " + id);
+        }
+
+        return userMapper.toDto(optionalUser.get());
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream().map(userMapper::toDto).toList();
-    }
+        List<User> users = userRepository.findAll();
+        List<UserDto> result = new ArrayList<>();
 
-    private void checkEmailUniqueness(String email, Long excludeId) {
-        Optional<User> userOpt = Optional.ofNullable(userRepository.findByEmail(email));
-        if (userOpt.isPresent() && !Objects.equals(userOpt.get().getId(), excludeId)) {
-            throw new ConflictException("Email уже используется: " + email);
+        for (User user : users) {
+            UserDto dto = userMapper.toDto(user);
+            result.add(dto);
         }
+
+        return result;
     }
 }
