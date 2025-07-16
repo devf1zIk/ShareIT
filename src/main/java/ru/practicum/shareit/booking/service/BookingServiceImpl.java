@@ -51,6 +51,22 @@ public class BookingServiceImpl implements BookingService {
         User booker = optionalUser.get();
         Item item = optionalItem.get();
 
+        if (item.getOwner().getId().equals(userId)) {
+            throw new NotFoundException("Нельзя бронировать свою вещь");
+        }
+
+        if (!item.getAvailable()) {
+            throw new ValidationException("Вещь недоступна для бронирования");
+        }
+
+        if (newBookingDto.getStart() == null || newBookingDto.getEnd() == null) {
+            throw new ValidationException("Дата начала и окончания обязательны");
+        }
+
+        if (!newBookingDto.getStart().isBefore(newBookingDto.getEnd())) {
+            throw new ValidationException("Дата начала должна быть раньше даты окончания");
+        }
+
         Booking booking = bookingMapper.toBooking(newBookingDto, booker, item);
         Booking saved = bookingRepository.save(booking);
         return bookingMapper.toBookingDto(saved);

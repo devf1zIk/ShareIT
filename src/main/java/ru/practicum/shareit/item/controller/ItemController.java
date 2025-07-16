@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.dto.CommentCreateDto;
 import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.service.ItemService;
 import java.util.List;
 
@@ -19,16 +21,16 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<ItemDto> createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                              @RequestBody @Valid ItemDto itemDto) {
-        ItemDto createdItem = itemService.createItem(userId, itemDto);
+                                              @RequestBody @Valid ItemCreateDto itemCreateDto) {
+        ItemDto createdItem = itemService.createItem(userId, itemCreateDto);
         return ResponseEntity.ok(createdItem);
     }
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @PathVariable Long itemId,
-                                              @RequestBody @Valid ItemDto itemDto) {
-        ItemDto updatedItem = itemService.updateItem(itemId, userId, itemDto);
+                                              @RequestBody @Valid ItemUpdateDto itemUpdateDto) {
+        ItemDto updatedItem = itemService.updateItem(itemId, userId, itemUpdateDto);
         return ResponseEntity.ok(updatedItem);
     }
 

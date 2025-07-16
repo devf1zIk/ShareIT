@@ -13,7 +13,9 @@ import ru.practicum.shareit.comment.repository.CommentsRepository;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -37,7 +39,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
-    public ItemDto createItem(Long userId, ItemDto itemDto) {
+    public ItemDto createItem(Long userId, ItemCreateDto itemDto) {
         User owner = getUserOrThrow(userId);
         Item item = itemMapper.toEntity(itemDto);
         item.setOwner(owner);
@@ -46,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(Long itemId, Long userId, ItemDto itemDto) {
+    public ItemDto updateItem(Long itemId, Long userId, ItemUpdateDto itemDto) {
         User user = getUserOrThrow(userId);
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
