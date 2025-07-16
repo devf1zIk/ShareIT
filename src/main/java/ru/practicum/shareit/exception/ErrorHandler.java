@@ -38,10 +38,4 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("error", e.getMessage()));
     }
-
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<Map<String, String>> handleOther(Throwable e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("error", "Произошла непредвиденная ошибка: " + e.getMessage()));
-    }
 }

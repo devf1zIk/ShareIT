@@ -1,33 +1,32 @@
 package ru.practicum.shareit.booking.mapper;
 
-import lombok.experimental.UtilityClass;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import org.mapstruct.*;
+import ru.practicum.shareit.booking.dto.*;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
-@UtilityClass
-public class BookingMapper {
+@Mapper(componentModel = "spring", uses = {
+        ru.practicum.shareit.item.mapper.ItemMapper.class,
+        ru.practicum.shareit.user.mapper.UserMapper.class
+})
+public interface BookingMapper {
 
-    public static BookingDto toDto(Booking booking) {
-        if (booking == null) return null;
-        return BookingDto.builder()
-                .id(booking.getId())
-                .itemId(booking.getItemId())
-                .bookerId(booking.getBookerId())
-                .start(booking.getStart())
-                .end(booking.getEnd())
-                .status(booking.getStatus())
-                .build();
-    }
+    @Mapping(source = "item", target = "item")
+    @Mapping(source = "booker", target = "booker")
+    BookingDto toBookingDto(Booking booking);
 
-    public static Booking fromDto(BookingDto dto) {
-        if (dto == null) return null;
-        return Booking.builder()
-                .id(dto.getId())
-                .itemId(dto.getItemId())
-                .bookerId(dto.getBookerId())
-                .start(dto.getStart())
-                .end(dto.getEnd())
-                .status(dto.getStatus())
-                .build();
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", constant = "WAITING")
+    @Mapping(target = "booker", ignore = true)
+    @Mapping(target = "item", ignore = true)
+    Booking toBooking(NewBookingDto dto, @Context User booker, @Context Item item);
+
+    @AfterMapping
+    default void setContext(@MappingTarget Booking booking,
+                            @Context User booker,
+                            @Context Item item) {
+        booking.setBooker(booker);
+        booking.setItem(item);
     }
 }
