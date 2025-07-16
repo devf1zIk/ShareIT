@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<ItemDto> createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                              @RequestBody ItemDto itemDto) {
+                                              @RequestBody @Valid ItemDto itemDto) {
         ItemDto createdItem = itemService.createItem(userId, itemDto);
         return ResponseEntity.ok(createdItem);
     }
@@ -26,7 +27,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @PathVariable Long itemId,
-                                              @RequestBody ItemDto itemDto) {
+                                              @RequestBody @Valid ItemDto itemDto) {
         ItemDto updatedItem = itemService.updateItem(itemId, userId, itemDto);
         return ResponseEntity.ok(updatedItem);
     }
@@ -52,7 +53,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<CommentDto> addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                  @PathVariable Long itemId,
-                                                 @RequestBody CommentCreateDto commentDto) {
+                                                 @RequestBody @Valid CommentCreateDto commentDto) {
         CommentDto createdComment = itemService.addComment(userId, itemId, commentDto);
         return ResponseEntity.ok(createdComment);
     }

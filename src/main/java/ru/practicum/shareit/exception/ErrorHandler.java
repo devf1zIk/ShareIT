@@ -2,6 +2,8 @@ package ru.practicum.shareit.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
@@ -37,6 +39,22 @@ public class ErrorHandler {
     public ResponseEntity<Map<String, String>> handleConflict(ConflictException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("error", e.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException e) {
+        String errorMessage = e.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .orElse("Ошибка валидации запроса");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", errorMessage));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidJson(HttpMessageNotReadableException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", "Ошибка чтения запроса: " + e.getMostSpecificCause().getMessage()));
     }
 
     @ExceptionHandler(Throwable.class)

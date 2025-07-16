@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +18,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserCreateDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserCreateDto userDto) {
         UserDto createdUser = userService.createUser(userDto);
         return ResponseEntity.ok(createdUser);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id,
-                                              @RequestBody UserUpdateDto userDto) {
+                                              @RequestBody @Valid UserUpdateDto userDto) {
         UserDto updatedUser = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updatedUser);
     }
