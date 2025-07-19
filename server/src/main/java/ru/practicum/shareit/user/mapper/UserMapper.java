@@ -3,12 +3,14 @@ package ru.practicum.shareit.user.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.context.annotation.ComponentScan;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.model.User;
 
 @Mapper(componentModel = "spring")
+@ComponentScan("ru.practicum.shareit")
 public interface UserMapper {
 
     @Mapping(source = "id", target = "id")
