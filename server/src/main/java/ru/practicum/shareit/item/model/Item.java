@@ -24,7 +24,7 @@ public class Item extends BaseEntity {
     @Column(nullable = false)
     private Boolean available;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long request;
 
     @ManyToOne(fetch = FetchType.LAZY)

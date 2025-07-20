@@ -21,7 +21,7 @@ public interface ItemMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "owner", ignore = true)
-    @Mapping(target = "request", ignore = true)
+    @Mapping(source = "requestId", target = "request")
     Item toEntity(ItemCreateDto itemDto);
 
 

@@ -24,6 +24,7 @@ public class ItemRequestMapper {
         dto.setDescription(request.getDescription());
         dto.setId(request.getId());
         dto.setCreated(request.getCreated());
+        dto.setItems(items);
         return dto;
     }
 }

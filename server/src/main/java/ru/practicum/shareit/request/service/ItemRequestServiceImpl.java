@@ -17,6 +17,8 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +38,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto createRequest(Long userId, NewItemRequestDto dto) {
         User user = getUserOrThrow(userId);
 
-        ItemRequest request = new ItemRequest();
-        request.setDescription(dto.getDescription());
-        request.setRequester(user);
+        ItemRequest request = ItemRequestMapper.toEntity(dto, user);
 
         ItemRequest savedRequest = itemRequestRepository.save(request);
         return ItemRequestMapper.toDto(savedRequest, new ArrayList<>());

@@ -15,4 +15,6 @@ public class ItemCreateDto {
 
     @NotNull(message = "Доступность вещи (available) должна быть указана")
     private Boolean available;
+
+    private Long requestId;
 }
