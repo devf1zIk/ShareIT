@@ -1,15 +1,16 @@
 package ru.practicum.shareit.item.mapper;
 
 import org.mapstruct.*;
-import org.springframework.context.annotation.ComponentScan;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemShortDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.model.Item;
 
-@Mapper(componentModel = "spring")
-@ComponentScan("ru.practicum.shareit")
+@Mapper(
+        componentModel = "spring",
+        mappingInheritanceStrategy = MappingInheritanceStrategy.AUTO_INHERIT_ALL_FROM_CONFIG
+)
 public interface ItemMapper {
 
     @Mapping(source = "owner.id", target = "ownerId")

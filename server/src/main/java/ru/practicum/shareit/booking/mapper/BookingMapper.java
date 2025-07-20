@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.mapper;
 
 import org.mapstruct.*;
-import org.springframework.context.annotation.ComponentScan;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -9,7 +8,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 @Mapper(componentModel = "spring")
-@ComponentScan("ru.practicum.shareit")
 public interface BookingMapper {
 
     @Mapping(source = "item", target = "item")
